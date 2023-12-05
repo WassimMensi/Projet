@@ -7,8 +7,8 @@ public class AppContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(ConnectionString);
+        optionsBuilder.UseSqlite(ConnectionString);
     }
 
-    public DbSet<Book> Books { get; set }
+    public DbSet<Book> Books { get; set; }
 }
