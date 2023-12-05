@@ -37,7 +37,7 @@ public class BookController : ControllerBase
         {
             return BadRequest();
         }
-        Book? addedBook = await _context.Books.FirstOrDefaultAsync(book => book.Title == book.Title);
+        Book? addedBook = await _context.Books.FirstOrDefaultAsync(b => b.Title == book.Title);
         if (addedBook != null)
         {
             return BadRequest("Book already exists");
@@ -54,5 +54,13 @@ public class BookController : ControllerBase
             value: book);
         
     }
+
+    /*[HttpPut]
+    public async Task<ActionResult<Book>> PutBook([FromBody] Book book, int id)
+    {
+        var book = await _context.Books.FindAsync(Id);
+        
+
+    }*/
 
 }
