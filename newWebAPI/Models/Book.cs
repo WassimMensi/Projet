@@ -6,12 +6,12 @@ public class Book
     public string? Title { get; set; }
     public string? Author { get; set; }
     public string? Genre { get; set; }
-    public int Price { get; set; }
+    public float Price { get; set; }
     public DateTime PublishDate { get; set; }
     public string? Description { get; set; }
     public string? Remarks { get; set; }
 
-    public Book(int id, string? title, string? author, string? genre, int price, DateTime publishDate, string? description, string? remarks)
+    public Book(int id, string? title, string? author, string? genre, float price, DateTime publishDate, string? description, string? remarks)
     {
         Id = id;
         Title = title;
