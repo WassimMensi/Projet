@@ -55,12 +55,31 @@ public class BookController : ControllerBase
         
     }
 
-    /*[HttpPut]
+
+    [HttpPut]
     public async Task<ActionResult<Book>> PutBook([FromBody] Book book, int id)
     {
-        var book = await _context.Books.FindAsync(Id);
-        
-
-    }*/
+        if(book == null)
+        {
+            return BadRequest();
+        }
+        var book2 = await _context.Books.FindAsync(Id);
+        if(book2 == null)
+        {
+            return NotFound();
+        }
+        book2.Title = book.Title;
+        book2.Author = book.Author;
+        book2.Genre = book.Genre;
+        book2.Price = book.Price;
+        book2.PublishDate = book.PublishDate;
+        book2.Description = book.Description;
+        book2.Remarks = book.Remarks;
+        await _context.SaveChangesAsync();
+        return CreatedAtRoute(
+            routeName: nameof(GetBook),
+            routeValues: new { id = book.Id },
+            value: book);
+    }
 
 }
