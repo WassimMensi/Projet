@@ -55,6 +55,8 @@ public class BookController : ControllerBase
         
     }
 
+    
+
 
     [HttpPut]
     public async Task<ActionResult<Book>> PutBook([FromBody] Book book, int id)
@@ -63,7 +65,7 @@ public class BookController : ControllerBase
         {
             return BadRequest();
         }
-        var book2 = await _context.Books.FindAsync(Id);
+        var book2 = await _context.Books.FindAsync(id);
         if(book2 == null)
         {
             return NotFound();
@@ -83,9 +85,9 @@ public class BookController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<BooK>> DeleteBook(int id)
+    public async Task<ActionResult<Book>> DeleteBook(int id)
     {
-        var book = await _context.Books.FindAsync(Id);
+        var book = await _context.Books.FindAsync(id);
         if(book == null)
         {
             return NotFound();
