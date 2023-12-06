@@ -82,4 +82,17 @@ public class BookController : ControllerBase
             value: book);
     }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<BooK>> DeleteBook(int id)
+    {
+        var book = await _context.Books.FindAsync(Id);
+        if(book == null)
+        {
+            return NotFound();
+        }
+        _context.Books.Remove(book);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
 }
