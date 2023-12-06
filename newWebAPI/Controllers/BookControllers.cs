@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using newWebAPI.Controllers;
 using newWebAPI.Models;
 
+using AutoMapper;
+
 namespace newWebAPI.Controllers;
 
 [ApiController]
@@ -10,26 +12,37 @@ namespace newWebAPI.Controllers;
 public class BookController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IMapper _mapper;
 
-    public BookController(AppDbContext context)
+    public BookController(AppDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     [HttpGet]
 
-    public async Task<IEnumerable<Book>> Get()
+    public async Task<IEnumerable<BookUpdateDTO>> Get()
     {
-        return await _context.Books.ToListAsync();
+        var test = await _context.Books.ToListAsync();
+        var bookMap = _mapper.Map<Book>(test);
+        return bookMap;
     }
 
-    [HttpGet("{Id}", Name=nameof(GetBook))]
+    [HttpGet("ById/{Id}", Name=nameof(GetBook))]
     public async Task<ActionResult<Book>> GetBook(int Id)
     {
         var book = await _context.Books.FindAsync(Id);
         return book == null ? NotFound() : book;
     }
 
+    /* [HttpGet("ByAuthor/{Author}")]
+    public async Task<ActionResult<Book>> GetBookByAuthor(string Author)
+    {
+        var book = _context.Books.Where(b=>Author==b.Author).ToListAsync();
+        return book == null ? NotFound() : book;
+    }
+ */
     [HttpPost]
     public async Task<ActionResult<Book>> PostBook([FromBody] Book book)
     {
@@ -58,8 +71,8 @@ public class BookController : ControllerBase
     
 
 
-    [HttpPut]
-    public async Task<ActionResult<Book>> PutBook([FromBody] Book book, int id)
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Book>> PutBook([FromBody] BookUpdateDTO book, int id)
     {
         if(book == null)
         {
@@ -70,18 +83,16 @@ public class BookController : ControllerBase
         {
             return NotFound();
         }
-        book2.Title = book.Title;
-        book2.Author = book.Author;
-        book2.Genre = book.Genre;
-        book2.Price = book.Price;
-        book2.PublishDate = book.PublishDate;
-        book2.Description = book.Description;
-        book2.Remarks = book.Remarks;
+        var bookMap = _mapper.Map<Book>(book);
+        book2.Title = bookMap.Title;
+        book2.Author = bookMap.Author;
+        book2.Genre = bookMap.Genre;
+        book2.Price = bookMap.Price;
+        book2.PublishDate = bookMap.PublishDate;
+        book2.Description = bookMap.Description;
+        book2.Remarks = bookMap.Remarks;
         await _context.SaveChangesAsync();
-        return CreatedAtRoute(
-            routeName: nameof(GetBook),
-            routeValues: new { id = book.Id },
-            value: book);
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
@@ -94,7 +105,7 @@ public class BookController : ControllerBase
         }
         _context.Books.Remove(book);
         await _context.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
 
 }
