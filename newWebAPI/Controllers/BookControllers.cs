@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using newWebAPI.Controllers;
 using newWebAPI.Models;
-
+using newWebAPI.Models.DTOs;
 using AutoMapper;
 
 namespace newWebAPI.Controllers;
@@ -22,11 +21,11 @@ public class BookController : ControllerBase
 
     [HttpGet]
 
-    public async Task<IEnumerable<BookUpdateDTO>> Get()
+    public async Task<ActionResult<IEnumerable<Book>>> Get()
     {
         var test = await _context.Books.ToListAsync();
-        var bookMap = _mapper.Map<Book>(test);
-        return bookMap;
+        var bookMap = _mapper.Map<IEnumerable<BookUpdateDTO>>(test);
+        return Ok(bookMap);
     }
 
     [HttpGet("ById/{Id}", Name=nameof(GetBook))]
