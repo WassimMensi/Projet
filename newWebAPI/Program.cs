@@ -31,7 +31,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-        app.UseMiddleware<ApiKeyMiddleware>();
+        
 
         app.MapControllers();
 
