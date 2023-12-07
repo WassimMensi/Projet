@@ -78,7 +78,29 @@ public class BookController : ControllerBase
         
     }
 
-    
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Book>> PutBook([FromBody] BookUpdateDTO book, int id)
+    {
+        if(book == null)
+        {
+            return BadRequest();
+        }
+        var book2 = await _context.Books.FindAsync(id);
+        if(book2 == null)
+        {
+            return NotFound();
+        }
+        var bookMap = _mapper.Map<Book>(book);
+        book2.Title = bookMap.Title;
+        book2.Author = bookMap.Author;
+        book2.Genre = bookMap.Genre;
+        book2.Price = bookMap.Price;
+        book2.PublishDate = bookMap.PublishDate;
+        book2.Description = bookMap.Description;
+        book2.Remarks = bookMap.Remarks;
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
 
 
     [HttpPut("ChangeTitle/{id}/{title}")]
