@@ -82,7 +82,7 @@ public class BookController : ControllerBase
 
 
     [HttpPut("ChangeTitle/{id}/{title}")]
-    public async Task<ActionResult<Book>> PutBook(int id, string title)
+    public async Task<ActionResult<Book>> PutBookTitle(int id, string title)
     {
         Console.WriteLine(title);
         if(title == null)
@@ -96,6 +96,101 @@ public class BookController : ControllerBase
         }
         
         book2.Title = title;
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("ChangeGenre/{id}/{genre}")]
+    public async Task<ActionResult<Book>> PutBookGenre(int id, string genre)
+    {
+        Console.WriteLine(genre);
+        if(genre == null)
+        {
+            return BadRequest();
+        }
+        var book2 = await _context.Books.FindAsync(id);
+        if(book2 == null)
+        {
+            return NotFound();
+        }
+        
+        book2.Genre = genre;
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("ChangeAuthor/{id}/{author}")]
+    public async Task<ActionResult<Book>> PutBookAuthor(int id, string author)
+    {
+        Console.WriteLine(author);
+        if(author == null)
+        {
+            return BadRequest();
+        }
+        var book2 = await _context.Books.FindAsync(id);
+        if(book2 == null)
+        {
+            return NotFound();
+        }
+        
+        book2.Author = author;
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("ChangePrice/{id}/{price}")]
+    public async Task<ActionResult<Book>> PutBookPrice(int id, float price)
+    {
+        Console.WriteLine(price);
+        if(price == 0)
+        {
+            return BadRequest();
+        }
+        var book2 = await _context.Books.FindAsync(id);
+        if(book2 == null)
+        {
+            return NotFound();
+        }
+        
+        book2.Price = price;
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("ChangeDescription/{id}/{description}")]
+    public async Task<ActionResult<Book>> PutBookDesc(int id, string description)
+    {
+        Console.WriteLine(description);
+        if(description == null)
+        {
+            return BadRequest();
+        }
+        var book2 = await _context.Books.FindAsync(id);
+        if(book2 == null)
+        {
+            return NotFound();
+        }
+        
+        book2.Description = description;
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+    [HttpPut("ChangeRemarks/{id}/{remarks}")]
+    public async Task<ActionResult<Book>> PutBookRemarks(int id, string remarks)
+    {
+        Console.WriteLine(remarks);
+        if(remarks == null)
+        {
+            return BadRequest();
+        }
+        var book2 = await _context.Books.FindAsync(id);
+        if(book2 == null)
+        {
+            return NotFound();
+        }
+        
+        book2.Remarks = remarks;
         await _context.SaveChangesAsync();
         return NoContent();
     }
