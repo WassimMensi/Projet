@@ -29,19 +29,30 @@ public class BookController : ControllerBase
     }
 
     [HttpGet("ById/{Id}", Name=nameof(GetBook))]
-    public async Task<ActionResult<Book>> GetBook(int Id)
+    public async Task<ActionResult<BookUpdateDTO>> GetBook(int Id)
     {
-        var book = await _context.Books.FindAsync(Id);
-        return book == null ? NotFound() : book;
+        try
+        {
+            Book book = await _context.Books.FindAsync(Id);
+            Console.WriteLine(Id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            var bookMap = _mapper.Map<BookUpdateDTO>(book);
+            return Ok(bookMap);
+        }
+        catch (Exception ex)
+        {
+            // Log l'exception
+            Console.WriteLine(ex);
+            return StatusCode(500, "Une erreur interne du serveur s'est produite.");
+        }
     }
 
-    /* [HttpGet("ByAuthor/{Author}")]
-    public async Task<ActionResult<Book>> GetBookByAuthor(string Author)
-    {
-        var book = _context.Books.Where(b=>Author==b.Author).ToListAsync();
-        return book == null ? NotFound() : book;
-    }
- */
+    
     [HttpPost]
     public async Task<ActionResult<Book>> PostBook([FromBody] Book book)
     {
@@ -49,8 +60,9 @@ public class BookController : ControllerBase
         {
             return BadRequest();
         }
-        Book? addedBook = await _context.Books.FirstOrDefaultAsync(b => b.Title == book.Title);
-        if (addedBook != null)
+        var bookMap = _mapper.Map<Book>(book);
+        Book? bookAjouter = await _context.Books.FirstOrDefaultAsync(b => b.Title == book.Title);
+        if (bookAjouter != null)
         {
             return BadRequest("Book already exists");
         }
@@ -70,10 +82,11 @@ public class BookController : ControllerBase
     
 
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<Book>> PutBook([FromBody] BookUpdateDTO book, int id)
+    [HttpPut("ChangeTitle/{id}/{title}")]
+    public async Task<ActionResult<Book>> PutBook(int id, string title)
     {
-        if(book == null)
+        Console.WriteLine(title);
+        if(title == null)
         {
             return BadRequest();
         }
@@ -82,14 +95,8 @@ public class BookController : ControllerBase
         {
             return NotFound();
         }
-        var bookMap = _mapper.Map<Book>(book);
-        book2.Title = bookMap.Title;
-        book2.Author = bookMap.Author;
-        book2.Genre = bookMap.Genre;
-        book2.Price = bookMap.Price;
-        book2.PublishDate = bookMap.PublishDate;
-        book2.Description = bookMap.Description;
-        book2.Remarks = bookMap.Remarks;
+        
+        book2.Title = title;
         await _context.SaveChangesAsync();
         return NoContent();
     }
