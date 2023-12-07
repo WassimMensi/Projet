@@ -54,28 +54,27 @@ public class BookController : ControllerBase
 
     
     [HttpPost]
-    public async Task<ActionResult<Book>> PostBook([FromBody] Book book)
+    public async Task<ActionResult<BookUpdateDTO>> PostBook([FromBody] BookUpdateDTO book)
     {
         if(book == null)
         {
             return BadRequest();
         }
-        var bookMap = _mapper.Map<Book>(book);
         Book? bookAjouter = await _context.Books.FirstOrDefaultAsync(b => b.Title == book.Title);
+        var bookMap = _mapper.Map<Book>(book);
         if (bookAjouter != null)
         {
             return BadRequest("Book already exists");
         }
         else
         {
-            await _context.Books.AddAsync(book);
+            await _context.Books.AddAsync(bookMap);
             await _context.SaveChangesAsync();
         }
-
         return CreatedAtRoute(
             routeName: nameof(GetBook),
-            routeValues: new { id = book.Id },
-            value: book);
+            routeValues: new { id = bookMap.Id },
+            value: bookMap);
         
     }
 
